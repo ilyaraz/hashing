@@ -49,7 +49,7 @@ template<typename T> void testDictionary(const vuint &data, const vuint &queries
     timer.start();
     int result = dictionary.process(queries);
     timer.stop();
-    std::cerr << "query time: " << timer.getTime() << std::endl;
+    std::cerr << "queries per second: " << (queries.size() + 0.0) / (timer.getTime() + 0.0) << std::endl;
     std::cerr << "result: " << result << std::endl;
 }
 
@@ -80,10 +80,13 @@ void generateDataQueries(int dataSize, int queriesNumber, double positiveProbabi
 int main() {
     vuint data;
     vuint queries;
-    const int DATA_SIZE = 100000;
-    const int QUERIES_NUMBER = 100000000;
+    const int MAX_LOG_DATA_SIZE = 27;
+    const int QUERIES_NUMBER = 1 << 27;
     const double POSITIVE_PROBABILITY = 0.3;
-    generateDataQueries(DATA_SIZE, QUERIES_NUMBER, POSITIVE_PROBABILITY, data, queries);
+    for (int i = 1; i <= MAX_LOG_DATA_SIZE; ++i) {
+        generateDataQueries(1 << i, QUERIES_NUMBER, POSITIVE_PROBABILITY, data, queries);
+        testDictionary(data, queries, Bitset());
+    }
     testDictionary(data, queries, Bitset());
     return 0;
 }
