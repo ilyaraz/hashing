@@ -40,6 +40,8 @@ struct Bitset {
 };
 
 template<typename T> void testDictionary(const vuint &data, const vuint &queries, T dictionary) {
+    std::cerr << "data size: " << data.size() << std::endl;
+    std::cerr << "queries size: " << queries.size() << std::endl;
     utils::MinimalisticTimer timer;
     timer.start();
     dictionary.init(data);
@@ -83,10 +85,10 @@ int main() {
     const int MAX_LOG_DATA_SIZE = 27;
     const int QUERIES_NUMBER = 1 << 27;
     const double POSITIVE_PROBABILITY = 0.3;
-    for (int i = 1; i <= MAX_LOG_DATA_SIZE; ++i) {
+    for (int i = 16; i <= MAX_LOG_DATA_SIZE; ++i) {
+        std::cerr << "----------" << std::endl;
         generateDataQueries(1 << i, QUERIES_NUMBER, POSITIVE_PROBABILITY, data, queries);
         testDictionary(data, queries, Bitset());
     }
-    testDictionary(data, queries, Bitset());
     return 0;
 }
