@@ -19,7 +19,7 @@ namespace utils {
         char buffer[BUFFER_SIZE];
         va_list args;
         va_start(args, errorMessage);
-        vsprintf(buffer, errorMessage, args);
+        vsnprintf(buffer, BUFFER_SIZE, errorMessage, args);
         va_end(args);
         throw std::runtime_error(buffer);
     }
