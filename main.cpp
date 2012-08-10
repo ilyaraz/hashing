@@ -15,15 +15,15 @@ const int QUERIES_NUMBER = 100000000;
 
 struct Bitset {
 
-    vuchar bitset;
+    vuint bitset;
 
     void init(const vuint &data) {
-        int size = 1 << 29; 
+        int size = 1 << 27; 
         bitset.clear();
         bitset.resize(size, 0);
         for (size_t i = 0; i < data.size(); ++i) {
             uint x = data[i];
-            bitset[x >> 3] |= 1 << (x & 7);
+            bitset[x >> 5] |= 1ul << (x & 31);
         }
     }
 
@@ -31,7 +31,7 @@ struct Bitset {
         int result = 0;
         for (size_t i = 0; i < queries.size(); ++i) {
             uint x = queries[i];
-            if ((bitset[x >> 3] >> (x & 7)) & 1) {
+            if ((bitset[x >> 5] >> (x & 31)) & 1) {
                 ++result;
             }
         }
@@ -45,6 +45,7 @@ template<typename T> void testDictionary(const vuint &data, const vuint &queries
     dictionary.init(data);
     timer.stop();
     std::cerr << "preprocessing time: " << timer.getTime() << std::endl;
+    timer.reset();
     timer.start();
     int result = dictionary.process(queries);
     timer.stop();
