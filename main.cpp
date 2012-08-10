@@ -1,6 +1,9 @@
 #include "minimalistic_timer.h"
 
 #include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_01.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/variate_generator.hpp>
 
 #include <iostream>
 #include <vector>
@@ -9,11 +12,6 @@
 
 typedef unsigned int uint;
 typedef std::vector<uint> vuint;
-typedef unsigned char uchar;
-typedef std::vector<uchar> vuchar;
-
-const int DATA_SIZE = 100000000;
-const int QUERIES_NUMBER = 100000000;
 
 struct Bitset {
 
@@ -59,23 +57,33 @@ uint getSeed() {
     return std::time(0);
 }
 
-void generateDataQueries(vuint &data, vuint &queries, double positiveProbability) {
+void generateDataQueries(int dataSize, int queriesNumber, double positiveProbability, vuint &data, vuint &queries) {
     namespace rnd = boost::random;
     rnd::mt19937 generator(getSeed());
-    data.resize(DATA_SIZE);
-    for (int i = 0; i < DATA_SIZE; ++i) {
+    rnd::uniform_01<rnd::mt19937> rndDouble(generator);
+    boost::uniform_int<> rndIndex(0, dataSize - 1);
+    data.resize(dataSize);
+    for (int i = 0; i < dataSize; ++i) {
         data[i] = generator();
     }
-    queries.resize(QUERIES_NUMBER);
-    for (int i = 0; i < QUERIES_NUMBER; ++i) {
-        queries[i] = generator();
+    queries.resize(queriesNumber);
+    for (int i = 0; i < queriesNumber; ++i) {
+        if (rndDouble() < positiveProbability) {
+            queries[i] = data[rndIndex(generator)];
+        }
+        else {
+            queries[i] = generator();
+        }
     }
 }
 
 int main() {
     vuint data;
     vuint queries;
-    generateDataQueries(data, queries, 0.3);
+    const int DATA_SIZE = 100000;
+    const int QUERIES_NUMBER = 100000000;
+    const double POSITIVE_PROBABILITY = 0.3;
+    generateDataQueries(DATA_SIZE, QUERIES_NUMBER, POSITIVE_PROBABILITY, data, queries);
     testDictionary(data, queries, Bitset());
     return 0;
 }
