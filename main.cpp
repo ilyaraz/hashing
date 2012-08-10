@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 
+#include <ctime>
+
 typedef unsigned int uint;
 typedef std::vector<uint> vuint;
 typedef unsigned char uchar;
@@ -54,7 +56,7 @@ template<typename T> void testDictionary(const vuint &data, const vuint &queries
 }
 
 uint getSeed() {
-    return 0;
+    return std::time(0);
 }
 
 void generateDataQueries(vuint &data, vuint &queries, double positiveProbability) {
